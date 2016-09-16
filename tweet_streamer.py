@@ -21,10 +21,10 @@ FILE_NAME = YOUR_INFORMATION
 
 class TweetStreamer(TwythonStreamer):
 
-	def on_success(self, data):									#is called when tweets are caught
-		if 'text' in data:										#data is is json form, includes all information about tweet
-			global json_list									#global json array will get filled with tweets
-			data_new = {}										#build new json object with only necessary fields
+	def on_success(self, data):		#is called when tweets are caught
+		if 'text' in data:			#data is is json form, includes all information about tweet
+			global json_list		#global json array will get filled with tweets
+			data_new = {}			#build new json object with only necessary fields
 			data_new['text'] = data['text']
 			data_new['created_at'] = data['created_at']
 			data_new['favorite_count'] = data['favorite_count']
@@ -32,12 +32,12 @@ class TweetStreamer(TwythonStreamer):
 			data_new['user_name'] = data['user']['screen_name']
 			data_new['urls'] = []
 			for url_types in data['entities']['urls']:
-				data_new['text'] = data_new['text'].replace(url_types['url'].encode("utf8"), '')	#remove displayed url from tweet text, to put origin url instead
+				data_new['text'] = data_new['text'].replace(url_types['url'].encode("utf8"), '')		#remove displayed url from tweet text, to put origin url instead
 				try:
 					extended_url = {}
 					opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())		#to reach cookie required sites too
 					shortenedUrl = opener.open(url_types['url'])
-					extended_url['url'] = shortenedUrl.geturl()					#get real source of url
+					extended_url['url'] = shortenedUrl.geturl()			#get real source of url
 					data_new['urls'].append(extended_url)
 					print(extended_url['url'])
 				except (urllib2.HTTPError,urllib2.URLError) as e:
@@ -53,12 +53,12 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 		s.send_response(200)
 		s.send_header("Content-type", "text/html")
 		s.end_headers()
-	def do_GET(s):												#is called after GET request
+	def do_GET(s):		#is called after GET request
 
-		j2_env = Environment(loader=FileSystemLoader(FILE_DIR),	#trim_blocks will achieve space management in json
+		j2_env = Environment(loader=FileSystemLoader(FILE_DIR),			#trim_blocks will achieve space management in json
 				             trim_blocks=True
 				           	)
-		html_code = j2_env.get_template(FILE_NAME).render(		#render method will return final html as unicode string
+		html_code = j2_env.get_template(FILE_NAME).render(			#render method will return final html as unicode string
 										json_list=json_list
 										)
 
@@ -66,7 +66,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 		s.send_response(200)
 		s.send_header("Content-type", "text/html")
 		s.end_headers()
-		s.wfile.write(html_code.encode("utf16"))				#write file to display html, encode to convert unicode string to string
+		s.wfile.write(html_code.encode("utf16"))		#write file to display html, encode to convert unicode string to string
 
 
 
@@ -76,8 +76,8 @@ def stream_twitter(self):
 		try:
 			print time.asctime(), "Stream Starts - %s:%s" % (HOST_NAME, PORT_NUMBER)
 			streamer = TweetStreamer(CONSUMER_KEY, CONSUMER_SECRET,
-			              			ACCESS_TOKEN, ACCESS_TOKEN_SECRET)	#give token parameters to construct streamer
-			streamer.statuses.filter(track='asp')						#set tweet filter
+			              			ACCESS_TOKEN, ACCESS_TOKEN_SECRET)		#give token parameters to construct streamer
+			streamer.statuses.filter(track='asp')		#set tweet filter
 			print time.asctime(), "Stream Stops - %s:%s" % (HOST_NAME, PORT_NUMBER)
 		except:
 			continue
@@ -89,7 +89,7 @@ def run_server(self):
 	server_class = BaseHTTPServer.HTTPServer
 	httpd = server_class((HOST_NAME, PORT_NUMBER), MyHandler)
 	print time.asctime(), "Server Starts - %s:%s" % (HOST_NAME, PORT_NUMBER)
-	httpd.serve_forever()									#start server
+	httpd.serve_forever()		#start server
 
 
 
