@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Tweets from</title>
+</head>
+<body>
+    <ul id="navigation">
+    {% for tweet in json_list %}
+    <li><a>{{tweet.text}}
+
+      {%for urls in tweet.urls%}
+        {{urls.url}}
+      {% endfor %}
+    </a></li>
+    {% endfor %}
+    </ul>
+
+</body>
+</html>
